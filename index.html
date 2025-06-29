@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FriendGuardNNK: เพื่อนแท้ที่พร้อมรับฟัง</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+<body>
+    <header class="navbar">
+        <div class="container">
+            <div class="logo">
+                <img src="https://via.placeholder.com/40x40?text=FG" alt="FriendGuardNNK Logo" class="logo-img">
+                <span class="logo-text">FriendGuardNNK</span>
+            </div>
+            <nav class="nav-links">
+                <ul>
+                    <li><a href="#home">หน้าหลัก</a></li>
+                    <li><a href="#vent-room">ห้องระบายปัญหา</a></li>
+                    <li><a href="#assessment">แบบประเมินสุขภาพจิต</a></li>
+                    <li><a href="#advice">คำแนะนำ & แง่คิด</a></li>
+                    <li><a href="#about">เกี่ยวกับเรา</a></li>
+                    <li><a href="#contact">ติดต่อ</a></li>
+                </ul>
+            </nav>
+            <button class="menu-toggle" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <section class="hero-section" id="home">
+        <div class="container">
+            <h1 class="hero-title">FriendGuardNNK:<br>เพื่อนแท้ที่พร้อมรับฟัง</h1>
+            <p class="hero-subtitle">พื้นที่ปลอดภัยสำหรับนักเรียนและครูโรงเรียนควนขนุน</p>
+            <a href="#vent-room" class="btn primary-btn" id="ventProblemBtn">ระบายปัญหาของคุณที่นี่</a>
+        </div>
+    </section>
+
+    <section class="services-section">
+        <div class="container">
+            <h2 class="section-title">บริการของเรา</h2>
+            <div class="service-cards">
+                <div class="card service-card" id="anonymousChatCard">
+                    <i class="fas fa-comments service-icon"></i>
+                    <h3>เพื่อนรับฟังปัญหา</h3>
+                    <p>ระบายความรู้สึกกับเพื่อนร่วมโรงเรียนแบบไม่ระบุตัวตน</p>
+                </div>
+                <div class="card service-card" id="mentalHealthAssessmentCard">
+                    <i class="fas fa-clipboard-list service-icon"></i>
+                    <h3>แบบประเมินสุขภาพจิต</h3>
+                    <p>เครื่องมือประเมินสุขภาพจิตเบื้องต้นจากกรมสุขภาพจิต</p>
+                </div>
+                <div class="card service-card" id="dailyAdviceCard">
+                    <i class="fas fa-lightbulb service-icon"></i>
+                    <h3>คำแนะนำ & คำคม</h3>
+                    <p>คำแนะนำดีๆ และคำคมสร้างแรงบันดาลใจประจำวัน</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="daily-advice-section">
+        <div class="container">
+            <h2 class="section-title">คำคมประจำวัน</h2>
+            <div class="card advice-card">
+                <p id="daily-quote" class="quote-text">"เริ่มต้นวันใหม่ด้วยรอยยิ้มและใจที่พร้อมรับฟัง"</p>
+                <p class="quote-source">- FriendGuardNNK</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="anonymous-chat-section" id="vent-room">
+        <div class="container">
+            <h2 class="section-title">ห้องระบายปัญหา</h2>
+            <p class="section-description">เชื่อมต่อกับเพื่อนร่วมโรงเรียนแบบไม่ระบุตัวตน หรือระบายความรู้สึกกับ AI ที่พร้อมรับฟัง</p>
+
+            <div class="chat-choice-grid">
+                <div class="card chat-option-card">
+                    <h3>เพื่อนรับฟังปัญหา (1 ต่อ 1)</h3>
+                    <p>ระบายความรู้สึกกับเพื่อนร่วมโรงเรียนแบบส่วนตัว ไม่ระบุตัวตน</p>
+                    <button class="btn primary-btn" id="findPartnerBtn">หาเพื่อนรับฟังตอนนี้</button>
+                    <button class="btn secondary-btn" id="leaveChatBtn" style="display: none;">ออกจากห้อง</button>
+                    <p id="chatStatus" class="status-message">ยังไม่มีการเชื่อมต่อ</p>
+                </div>
+
+                <div class="card chat-option-card">
+                    <h3>AI ให้ระบาย</h3>
+                    <p>พิมพ์สิ่งที่อยู่ในใจออกมาได้เลย AI จะรับฟังและตอบกลับ</p>
+                    <textarea id="ai-input" rows="5" placeholder="ระบายความรู้สึกของคุณที่นี่..."></textarea>
+                    <button class="btn primary-btn" id="aiSendBtn">ส่งข้อความ</button>
+                    <p id="ai-response" class="ai-response-text"></p>
+                </div>
+            </div>
+            
+            <div class="card chat-box-card" id="chatBox" style="display: none;">
+                <div class="chat-messages" id="chatMessages">
+                    </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="พิมพ์ข้อความของคุณที่นี่..." disabled>
+                    <button class="btn primary-btn" id="sendMessageBtn" disabled>ส่ง</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <h2 class="section-title">ติดต่อเรา</h2>
+            <div class="contact-info-grid">
+                <div class="card contact-card">
+                    <h3>ติดต่อครูแนะแนว</h3>
+                    <p><i class="fas fa-phone-alt icon-blue"></i> เบอร์โทรศัพท์: <a href="tel:[เบอร์โทรครูแนะแนว]">[เบอร์โทรครูแนะแนว]</a></p>
+                    <p><i class="fas fa-clock icon-blue"></i> เวลาทำการ: [ระบุเวลา]</p>
+                </div>
+                <div class="card contact-card">
+                    <h3>ติดต่อฝ่ายกิจการนักเรียน</h3>
+                    <p><i class="fas fa-phone-alt icon-blue"></i> เบอร์โทรศัพท์: <a href="tel:[เบอร์โทรฝ่ายกิจการนักเรียน]">[เบอร์โทรฝ่ายกิจการนักเรียน]</a></p>
+                </div>
+            </div>
+            <p class="section-description">
+                หากคุณต้องการติดต่อเรา คุณสามารถใช้ข้อมูลติดต่อด้านบน หรือกรอกแบบฟอร์มด้านล่างนี้ได้
+                **ข้อมูลในฟอร์มจะถูกส่งถึงเราโดยตรง แต่จะไม่มีการตอบกลับผ่านอีเมลอัตโนมัติ**
+            </p>
+            <form class="contact-form" id="contactForm">
+                <input type="text" name="name" placeholder="ชื่อของคุณ (ไม่บังคับ)">
+                <input type="email" name="email" placeholder="อีเมลของคุณ (ไม่บังคับ)">
+                <textarea name="message" rows="5" placeholder="ข้อความของคุณ..."></textarea>
+                <button type="submit" class="btn primary-btn">ส่งข้อความ</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="about-section" id="about">
+        <div class="container">
+            <h2 class="section-title">เกี่ยวกับ FriendGuardNNK</h2>
+            <p>FriendGuardNNK สร้างขึ้นโดยนักเรียนโรงเรียนควนขนุน ด้วยความตั้งใจที่จะเป็นพื้นที่ปลอดภัยและเป็นเพื่อนที่คอยรับฟังและสนับสนุนด้านสุขภาพจิตให้กับเพื่อนๆ และคุณครูในโรงเรียนของเรา</p>
+            <p>เราเชื่อว่าการมีสุขภาพจิตที่ดีเป็นสิ่งสำคัญในการใช้ชีวิตประจำวัน และเราพร้อมที่จะเป็นส่วนหนึ่งในการช่วยให้ทุกคนผ่านพ้นช่วงเวลาที่ยากลำบากไปได้</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 FriendGuardNNK. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div id="mobileNavOverlay" class="mobile-nav-overlay">
+        <button class="close-btn">&times;</button>
+        <nav class="nav-links-mobile">
+            <ul>
+                <li><a href="#home">หน้าหลัก</a></li>
+                <li><a href="#vent-room">ห้องระบายปัญหา</a></li>
+                <li><a href="#assessment">แบบประเมินสุขภาพจิต</a></li>
+                <li><a href="#advice">คำแนะนำ & แง่คิด</a></li>
+                <li><a href="#about">เกี่ยวกับเรา</a></li>
+                <li><a href="#contact">ติดต่อ</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

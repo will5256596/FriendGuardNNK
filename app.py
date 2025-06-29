@@ -16,6 +16,8 @@ socketio = SocketIO(app)
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 if not GEMINI_API_KEY:
+    # หากรันบน Render และไม่ได้ตั้งค่า Env Var จะเกิดข้อผิดพลาดนี้
+    # หากรันบนเครื่องคุณเอง และไม่ได้ตั้งค่าใน .env ก็จะเกิดข้อผิดพลาดนี้
     raise ValueError("GEMINI_API_KEY environment variable not set. Please set it on Render.com or in your local .env file.")
 
 genai.configure(api_key=GEMINI_API_KEY)
@@ -53,7 +55,6 @@ def ai_response():
 @socketio.on('join_room')
 def handle_join_room(data):
     room = data['room']
-    # join_room(room) # ไม่ได้ใช้จริงในโค้ดที่คุณให้มาก่อนหน้านี้
     print(f"User joined room: {room}")
     emit('status', {'msg': f'User joined room: {room}.'}) # เพื่อแสดงสถานะใน UI
 
@@ -64,21 +65,8 @@ def handle_message(data):
     print(f"Message from {room}: {msg}")
     emit('message', {'msg': msg, 'room': room}, room=room)
 
-
-# ถ้าคุณมี static files ในโฟลเดอร์ public
-# @app.route('/public/<path:filename>')
-# def serve_static(filename):
-#     return send_from_directory('public', filename)
-
 if __name__ == '__main__':
     # สำหรับการรันบนเครื่องคอมพิวเตอร์ของคุณในโหมด Debugging
     # ใน Production บน Render.com จะใช้ Gunicorn รันแทน
     print("Running Flask app in development mode. For production, use Gunicorn/gunicorn.")
-    # socketio.run(app, debug=True, host='0.0.0.0', port=5000)
-    # ^^^^^ คุณอาจจะต้อง uncomment บรรทัดนี้เมื่อรันบนเครื่องของคุณ
-    # ถ้าคุณต้องการทดสอบ Flask ด้วยตัวเองโดยไม่มี Gunicorn
-
-    # For local development with Flask, you might use:
-    # app.run(debug=True, host='0.0.0.0', port=5000)
-    # For local development with SocketIO, make sure to use socketio.run:
     socketio.run(app, debug=True, host='0.0.0.0', port=5000)
